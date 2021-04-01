@@ -1,11 +1,11 @@
-80.1.3.4;MISS;23;6342
-128.3.4.4;MISS;23;5059
-212.1.2.4;MISS;23;4158
-17.0.0.1;1;23;7194
+80.1.3.4;MISS;23;6281
+128.3.4.4;MISS;23;11201
+212.1.2.4;MISS;23;5229
+17.0.0.1;1;23;34275
 
 Packets processed= 4
 Average table accesses= 23.00
-Average packet processing time (nsecs)= 5688.25
-Memory (Kbytes) = 4008
-CPU Time (secs)= 0.012328
+Average packet processing time (nsecs)= 14246.50
+Memory (Kbytes) = 3960
+CPU Time (secs)= 0.012821
 

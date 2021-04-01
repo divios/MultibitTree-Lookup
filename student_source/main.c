@@ -11,19 +11,23 @@
 
 
 void intHandler(int signal) {
-    freeIO();
+    //freeIO();
 }
 
 uint32_t getMaxItit(int prefixLength);
 
+// declared here to avoid stackOverflow
+uint16_t mainArray[MAIN_ARRAY_SIZE];
+uint16_t secondArray[SECOND_ARRAY_SIZE];
+
 int main(int argc, char *argv[]) {
 
     if (argc != 3) {
-        printf("Argumentos erroneos, deben ser 3\n");
-        exit(-1);
+        puts("Argumentos erroneos, deben ser 3");
+        return 0;
     }
 
-    signal(SIGINT, intHandler);
+    //signal(SIGINT, intHandler);
 
     char *fib_table = argv[1];
     char *inputPacketFIle = argv[2];
@@ -34,11 +38,8 @@ int main(int argc, char *argv[]) {
         exit(-1);
     }
 
-    static uint16_t mainArray[MAIN_ARRAY_SIZE];
-    static uint16_t secondArray[SECOND_ARRAY_SIZE];
-
-    /* Todo el proceso de activar el fichero y leer argumentos */
-
+    memset(&mainArray, 0, sizeof(mainArray));
+    memset(&secondArray, 0, sizeof(secondArray));
 
     /* -------------------------------------------------------------------------------*/
     /**** Proceso de leer fichero FIB info y registrar las direcciones en la tabla ****/
@@ -53,7 +54,7 @@ int main(int argc, char *argv[]) {
 
         result = readFIBLine(&prefix, &prefixLength, &outInterface);
         if (result == REACHED_EOF) {
-            printf("Reached end of PIB file\n");
+            puts("Reached end of PIB file");
             break;
         } else if (result != OK) {
             printIOExplanationError(result);
@@ -126,7 +127,7 @@ int main(int argc, char *argv[]) {
         result = readInputPacketFileLine(&dir);
 
         if (result == REACHED_EOF) {
-            printf("Reached end of inputPacket file\n");
+            puts("Reached end of inputPacket file");
             break;
         } else if (result != OK) {
             printIOExplanationError(result);
