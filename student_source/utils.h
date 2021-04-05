@@ -67,6 +67,6 @@ void setContent(uint16_t *dir, uint16_t content);
  * this two are 1-32
  */
 
-uint32_t cutPrefix(uint32_t prefix, int start, int stop);
+uint32_t applyMask(uint32_t prefix, int start, int stop);
 
 //RL Lab 2020 Switching UC3M

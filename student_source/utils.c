@@ -92,7 +92,7 @@ void setContent(uint16_t *dir, uint16_t content) {
 
 /* Applies a given mask */
 
-uint32_t cutPrefix(uint32_t prefix, int start, int stop) {
+uint32_t applyMask(uint32_t prefix, int start, int stop) {
     uint32_t mask = 0;
     for (int i = 0; i < 32; i++) {
         if (i >= stop && i <= start - 1) {

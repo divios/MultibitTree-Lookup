@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 
             //printf("Es menor que 24\n");
             /* cut the prefix to get the part that the prefixLength marks */
-            uint32_t choppedPrefix = cutPrefix(prefix, 32, 32 - prefixLength) >> 8;
+            uint32_t choppedPrefix = applyMask(prefix, 32, 32 - prefixLength) >> 8;
             max_itin = getMaxItit(24 - prefixLength);
 
             do {
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
         } else {
 
             //printf("Es mayor que 26\n");
-            int rawPos = cutPrefix(prefix, 32, 8) >> 8,
+            int rawPos = applyMask(prefix, 32, 8) >> 8,
                     slotAux;
 
             if (!getFlag(mainArray[rawPos])) { /* If it is the first time that happens */
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
 
             slotAux = getContent(mainArray[rawPos]);
 
-            choppedPrefix = cutPrefix(prefix, 8, 32 - prefixLength);
+            choppedPrefix = applyMask(prefix, 8, 32 - prefixLength);
             max_itin = getMaxItit(32 - prefixLength);
 
             int position = slotAux * pow(2, 8) + choppedPrefix;
@@ -137,13 +137,13 @@ int main(int argc, char *argv[]) {
         clock_gettime(CLOCK_MONOTONIC_RAW,
                       &initialTime);
 
-        choppedDir = cutPrefix(dir, 32, 8) >> 8;
+        choppedDir = applyMask(dir, 32, 8) >> 8;
 
         if (!getFlag(mainArray[choppedDir])) {
             output = getContent(mainArray[choppedDir]);
         } else {
             uint8_t dirMem = getContent(mainArray[choppedDir]);
-            choppedDir = cutPrefix(dir, 8, 0) + dirMem * pow(2, 8);
+            choppedDir = applyMask(dir, 8, 0) + dirMem * pow(2, 8);
             output = secondArray[choppedDir];
             n_table_access++;
         }
