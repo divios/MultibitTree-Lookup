@@ -2,6 +2,8 @@
 #include "stdlib.h"
 #include <math.h>
 
+#define contentMask 32767 // (2^16) - 1
+
 /********************************************************************
  * Generate a netmask of length prefixLength
  ********************************************************************/
@@ -70,11 +72,7 @@ uint8_t getFlag(uint16_t dir) {
  */
 
 uint16_t getContent(uint16_t dir) {
-    uint16_t content = 0;
-    for (int i = 0; i < 15; i++) {
-        content += getBit(dir, i) * pow(2, i);
-    }
-    return content;
+    return (dir & contentMask);
 }
 
 /*
@@ -88,20 +86,12 @@ void setContent(uint16_t *dir, uint16_t content) {
     }
 }
 
-
-
 /* Applies a given mask */
 
 uint32_t applyMask(uint32_t prefix, int start, int stop) {
-    uint32_t mask = 0;
-    for (int i = 0; i < 32; i++) {
-        if (i >= stop && i <= start - 1) {
-            mask += pow(2, i);
-        }
-    }
+    uint32_t mask = pow(2, start) - pow(2, stop);
     return (prefix & mask);
 }
-
 
 
 //RL Lab 2020 Switching UC3M
