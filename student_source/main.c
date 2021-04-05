@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     uint8_t slot = 0;
     while (1) {
 
-        uint32_t prefix, choppedPrefix, max_itin;
+        uint32_t prefix, prefixMasked, max_itin;
         int result, prefixLength, outInterface,
                 n_itin = 0;
 
@@ -63,12 +63,12 @@ int main(int argc, char *argv[]) {
 
             //printf("Es menor que 24\n");
             /* cut the prefix to get the part that the prefixLength marks */
-            uint32_t choppedPrefix = applyMask(prefix, 32, 32 - prefixLength) >> 8;
+            uint32_t prefixMasked = applyMask(prefix, 32, 32 - prefixLength) >> 8;
             max_itin = pow(2, 24 - prefixLength) - 1;
 
             do {
-                mainArray[choppedPrefix] = outInterface;
-                choppedPrefix++;
+                mainArray[prefixMasked] = outInterface;
+                prefixMasked++;
                 n_itin++;
             } while (n_itin <= max_itin);
 
@@ -95,10 +95,10 @@ int main(int argc, char *argv[]) {
 
             slotAux = getContent(mainArray[rawPos]);
 
-            choppedPrefix = applyMask(prefix, 8, 32 - prefixLength);
+            prefixMasked = applyMask(prefix, 8, 32 - prefixLength);
             max_itin = pow(2, 32 - prefixLength) - 1;
 
-            int position = slotAux * pow(2, 8) + choppedPrefix;
+            int position = slotAux * pow(2, 8) + prefixMasked;
 
             do {
                 secondArray[position] = outInterface;
