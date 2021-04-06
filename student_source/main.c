@@ -111,7 +111,8 @@ int main(int argc, char *argv[]) {
 
     /* LOOKUP */
 
-    int processedPackets = 0, totalTableAccesses = 0, totalPacketProcessingTime = 0;
+    int processedPackets = 0;
+    double totalTableAccesses = 0, totalPacketProcessingTime = 0;
 
     puts("");
 
