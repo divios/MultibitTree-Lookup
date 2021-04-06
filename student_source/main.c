@@ -11,7 +11,7 @@
 
 
 void intHandler(int signal) {
-    //freeIO();
+    freeIO();
 }
 
 // declared here to avoid stackOverflow
@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    //signal(SIGINT, intHandler);
+    signal(SIGINT, intHandler);
 
     char *fib_table = argv[1];
     char *inputPacketFIle = argv[2];
