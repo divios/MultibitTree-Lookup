@@ -60,21 +60,19 @@ int main(int argc, char *argv[]) {
         }
 
         if (prefixLength <= 24) {
-
-            //printf("Es menor que 24\n");
-            /* cut the prefix to get the part that the prefixLength marks */
+            
             uint32_t prefixMasked = applyMask(prefix, 32, 32 - prefixLength) >> 8;
             max_itin = pow(2, 24 - prefixLength) - 1;
 
-            do {
+            // set all the range of values that covers the prefixMasked to the given interface
+            do {    
                 mainArray[prefixMasked] = outInterface;
                 prefixMasked++;
                 n_itin++;
             } while (n_itin <= max_itin);
 
-        } else {
-
-            //printf("Es mayor que 26\n");
+        } else {    // if prefixLength is greater than 24
+            
             int rawPos = applyMask(prefix, 32, 8) >> 8,
                     slotAux;
 
@@ -82,6 +80,7 @@ int main(int argc, char *argv[]) {
 
                 uint16_t auxOutput = getContent(mainArray[rawPos]); // the previous interface
 
+                // set all the assigned values on the secondArray to the saved interface so we don't lost it
                 if (auxOutput != 0) {   // we can skip this if it is an invalid prefix
                     for (int i = slot * pow(2, 8);
                          i < slot * pow(2, 8) + pow(2, 8); i++) {
@@ -100,6 +99,7 @@ int main(int argc, char *argv[]) {
 
             int position = slotAux * pow(2, 8) + prefixMasked;
 
+            // set all the range of values that covers the prefixMasked to the given interface
             do {
                 secondArray[position] = outInterface;
                 position++;
@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-/* LOOKUP */
+    /* LOOKUP */
 
     int processedPackets = 0, totalTableAccesses = 0, totalPacketProcessingTime = 0;
 
@@ -119,7 +119,7 @@ int main(int argc, char *argv[]) {
         int result, n_table_access = 1, output;
         double searchingTime;
         struct timespec initialTime, finalTime;
-        uint32_t dir, choppedDir;
+        uint32_t dir, prefixMasked;
 
 
         result = readInputPacketFileLine(&dir);
@@ -135,15 +135,16 @@ int main(int argc, char *argv[]) {
         clock_gettime(CLOCK_MONOTONIC_RAW,
                       &initialTime);
 
-        choppedDir = applyMask(dir, 32, 8) >> 8;
+        prefixMasked = applyMask(dir, 32, 8) >> 8;
 
-        if (!getFlag(mainArray[choppedDir])) {
-            output = getContent(mainArray[choppedDir]);
-        } else {
-            uint8_t dirMem = getContent(mainArray[choppedDir]);
-            choppedDir = applyMask(dir, 8, 0) + dirMem * pow(2, 8);
-            output = secondArray[choppedDir];
-            n_table_access++;
+        if (!getFlag(mainArray[prefixMasked])) { // if it is not set, just take the
+            output = getContent(mainArray[prefixMasked]); //value on the 1-15 bits (content)
+
+        } else { //if it is set, we look on the secondArray
+            uint8_t dirMem = getContent(mainArray[prefixMasked]);
+            prefixMasked = applyMask(dir, 8, 0) + dirMem * pow(2, 8);
+            output = secondArray[prefixMasked];
+            n_table_access = 2;
         }
 
         clock_gettime(CLOCK_MONOTONIC_RAW,
@@ -161,4 +162,6 @@ int main(int argc, char *argv[]) {
     printSummary(processedPackets, totalTableAccesses
                                    / processedPackets,
                  totalPacketProcessingTime / processedPackets);
+
+    freeIO();
 }
