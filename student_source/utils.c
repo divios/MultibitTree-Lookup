@@ -81,9 +81,8 @@ uint16_t getContent(uint16_t dir) {
  */
 
 void setContent(uint16_t *dir, uint16_t content) {
-    for (int i = 0; i < 15; i++) {
-        setBit((uint32_t*) dir, i, getBit(content, i));
-    }
+    uint16_t mask = (*dir ^ content) & contentMask;
+    *dir = (*dir ^ mask) ;
 }
 
 /* Applies a given mask */
